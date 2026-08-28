@@ -31,6 +31,8 @@ public class MainCommand {
         plugin.getConfigManager().reload();
         plugin.getNametagManager().reload();
         plugin.getPlaceholderManager().reload();
+        plugin.getHook(org.alexdev.unlimitednametags.hook.VoiceChatHook.class)
+                .ifPresent(org.alexdev.unlimitednametags.hook.VoiceChatHook::reload);
         plugin.getKyoriManager().sendMessage(sender, Formatter.LEGACY.format(plugin, sender, "&aUnlimitedNameTags has been reloaded!"));
     }
 

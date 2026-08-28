@@ -337,6 +337,12 @@ public class PlaceholderManager {
 
     @NotNull
     public String getCachedPlaceholder(@NotNull Player player, @NotNull String placeholder) {
+        // Fast-path: resolve %vc% internally via VoiceChatHook (no PAPI needed)
+        if ("%vc%".equalsIgnoreCase(placeholder)) {
+            return plugin.getHook(org.alexdev.unlimitednametags.hook.VoiceChatHook.class)
+                    .map(h -> h.getStatusText(player.getUniqueId()))
+                    .orElse("");
+        }
         final Map<String, String> playerCache = getCachedPlaceholders(player);
         return playerCache.computeIfAbsent(placeholder, p -> papiManager.setPlaceholders(player, p));
     }

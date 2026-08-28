@@ -13,28 +13,29 @@ version = property("version") as String
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://repo.nexomc.com/snapshots/")
-    maven("https://oss.sonatype.org/content/groups/public/")
-    maven("https://repo.extendedclip.com/releases")
-    maven("https://repo.minebench.de/")
-    maven("https://oss.sonatype.org/content/repositories/snapshots")
-    maven("https://libraries.minecraft.net/")
+    maven("https://maven.maxhenkel.de/repository/public")
     maven("https://repo.codemc.io/repository/maven-public/")
     maven("https://repo.codemc.io/repository/maven-snapshots/")
     maven("https://repo.codemc.io/repository/maven-releases/")
-    maven("https://repo.viaversion.com/")
-    maven("https://repo.opencollab.dev/main/")
-    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-    maven("https://repo.oraxen.com/releases")
-    maven("https://repo.oraxen.com/snapshots")
-    maven("https://jitpack.io")
-    maven("https://repo.viaversion.com")
-    //maven("https://maven.evokegames.gg/snapshots")
     maven("https://repo.alessiodp.com/releases")
-    maven("https://maven.typewritermc.com/beta")
+    maven("https://repo.alessiodp.com/snapshots")
+    maven("https://mvn.lib.co.nz/public/")
+    maven("https://jitpack.io")
     maven("https://repo.nexomc.com/snapshots/")
     maven("https://repo.nexomc.com/releases")
+    maven("https://oss.sonatype.org/content/groups/public/")
+    maven("https://oss.sonatype.org/content/repositories/snapshots")
+    maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    maven("https://repo.extendedclip.com/releases")
+    maven("https://repo.minebench.de/")
+    maven("https://libraries.minecraft.net/")
+    maven("https://repo.viaversion.com/")
+    maven("https://repo.opencollab.dev/main/")
+    maven("https://repo.oraxen.com/releases")
+    maven("https://repo.oraxen.com/snapshots")
     maven("https://repo.md-5.net/content/groups/public/")
+    maven("https://maven.typewritermc.com/beta")
+    maven("https://repo.hibiscusmc.com/releases")
     maven {
         name = "feather-repo"
         url = uri("https://repo.feathermc.net/artifactory/maven-releases")
@@ -43,7 +44,6 @@ repositories {
         name = "labymod"
         url = uri("https://dist.labymod.net/api/v1/maven/release/")
     }
-    maven("https://repo.hibiscusmc.com/releases")
 }
 
 dependencies {
@@ -55,6 +55,7 @@ dependencies {
         exclude(group = "io.papermc.paper") // Exclude Paper API
         exclude(group = "com.github.Tofaa2.EntityLib") // Exclude EntityLib
         exclude(group = "me.tofaa.entitylib") // Exclude EntityLib
+        exclude(group = "io.github.tofaa2") // Exclude EntityLib snapshot (JitPack 401)
     }
     compileOnly(libs.placeholderapi)
     compileOnly(libs.miniplaceholdersApi)
@@ -75,6 +76,7 @@ dependencies {
     compileOnly(libs.creative.serializer)
     compileOnly(libs.libs.disguises)
     compileOnly(libs.hmcCosmetics)
+    compileOnly(libs.voicechatApi)
 
     implementation(libs.drink)
     implementation(libs.universalScheduler)
@@ -90,7 +92,7 @@ dependencies {
 
 tasks.named<ShadowJar>("shadowJar") {
     val relocation = "org.alexdev.unlimitednametags.libraries."
-    relocate("net.byteflux.libby", relocation + "libby.bukkit")
+    relocate("com.alessiodp.libby", relocation + "libby")
     relocate("org.jetbrains", relocation + "jetbrains")
     relocate("org.intellij", relocation + "intellij")
     relocate("de.themoep", relocation + "themoep")
@@ -99,7 +101,6 @@ tasks.named<ShadowJar>("shadowJar") {
     relocate("javax.annotation", relocation + "annotation")
     relocate("com.github.Anon8281.universalScheduler", relocation + "universalScheduler")
     relocate("net.kyori.adventure.text.serializer", "io.github.retrooper.packetevents.adventure.serializer")
-    relocate("net.byteflux.libby", relocation + "libby.bukkit")
 
     relocate("de.exlll.configlib", "org.alexdev.unlimitednametags.configlib")
 
@@ -127,7 +128,10 @@ tasks.named<ShadowJar>("shadowJar") {
     destinationDirectory.set(file("$rootDir/target"))
     archiveFileName.set("${project.name}.jar")
 
-    minimize()
+    minimize {
+        // Never strip libby — it's loaded reflectively at runtime
+        exclude(dependency("com.alessiodp.libby:.*:.*"))
+    }
 }
 
 tasks.withType<JavaCompile> {

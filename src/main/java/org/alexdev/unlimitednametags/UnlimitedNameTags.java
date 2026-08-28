@@ -254,6 +254,14 @@ public final class UnlimitedNameTags extends JavaPlugin {
             getLogger().info("HMCCosmetics found, hooking into it");
         }
 
+        // Simple Voice Chat integration (%vc% placeholder)
+        if (Bukkit.getPluginManager().isPluginEnabled("voicechat")
+                && configManager.getSettings().getVoiceChat().isEnabled()) {
+            final VoiceChatHook hook = new VoiceChatHook(this);
+            hooks.put(VoiceChatHook.class, hook);
+            getLogger().info("SimpleVoiceChat found, hooking into it (%vc% placeholder enabled)");
+        }
+
 //        if (Bukkit.getPluginManager().isPluginEnabled("LabyModServerAPI")) {
 //            final LabyModHook hook = new LabyModHook(this);
 //            hooks.put(LabyModHook.class, hook);

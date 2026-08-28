@@ -252,4 +252,33 @@ public class Settings {
             return new HexBackground(enabled(), getHex(), opacity(), shadowed(), seeThrough());
         }
     }
+
+    // ---------------------------------------------------------------------------
+    // VoiceChat placeholder settings
+    // ---------------------------------------------------------------------------
+
+    @Comment("""
+            Settings for the built-in %vc% placeholder (requires Simple Voice Chat).
+            Texts support MiniMessage formatting.""")
+    private VoiceChatSettings voiceChat = new VoiceChatSettings();
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Configuration
+    public static class VoiceChatSettings {
+
+        @Comment("Enable or disable the %vc% placeholder integration.")
+        private boolean enabled = true;
+
+        @Comment("How long (ms) after the last microphone packet a player is still considered 'talking'.")
+        private int talkTimeoutMs = 300;
+
+        @Comment("Text shown for each voice state. Supports MiniMessage tags.")
+        private String talking      = "<green>\uD83D\uDD0A</green>";
+        private String whispering   = "<yellow>\uD83D\uDD07</yellow>";
+        private String quiet        = "<gray>\uD83C\uDFA4</gray>";
+        private String disabled     = "";
+        private String notInstalled = "";
+    }
 }
